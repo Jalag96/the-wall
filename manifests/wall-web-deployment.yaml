@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wall-web
+  labels:
+    app: wall-web
+    app.kubernetes.io/part-of: the-wall
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wall-web
+  template:
+    metadata:
+      labels:
+        app: wall-web
+        app.kubernetes.io/part-of: the-wall
+    spec:
+      containers:
+        - name: wall-web
+          image: docker.io/jalag004/the-wall:v2
+          securityContext:
+            runAsNonRoot: true
+            AllowPrivilegeEscalation: false
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+          #Konfig enligt Red Hat 6.3
+
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 5
+            httpGet:
+              path: /health
+              port: 8080
+          
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 5
+            httpGet:
+              path: /
+              port: 8080
+
+          livenessProbe:
+            failureThreshold: 6
+            periodSeconds: 10
+            httpGet:
+              path: /health
+              port: 8080       
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: wall-configmap
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: wall-configmap
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: wall-configmap
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: wall-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wall-secret
+                  key: DB_PASSWORD
+

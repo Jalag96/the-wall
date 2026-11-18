@@ -1,0 +1,107 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wall-db
+  labels:
+    app: wall-db
+    app.kubernetes.io/part-of: the-wall
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: wall-db
+  template:
+    metadata:
+      labels:
+        app: wall-db
+        app.kubernetes.io/part-of: the-wall
+    spec:
+      containers:
+        - name: postgresql
+          image: quay.io/kurs/postgresql:16
+
+#SecurityContext är konfigurerad, men OKD:s befintliga SCC verkar redan hantera rootless.
+
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          
+          # Väntar på att PostgreSQL startar.
+          startupProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - 127.0.0.1
+                - -p
+                - "5432"
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+
+          # Kontroll att databas tar emot anslutning
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - 127.0.0.1
+                - -p
+                - "5432"
+          failureThreshold: 3
+          periodSeconds: 5
+          timeoutSeconds: 3
+
+          # Kontroll att databasen fortfarande svarar.
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - 127.0.0.1
+                - -p
+                - "5432"
+          failureThreshold: 6
+          periodSeconds: 10
+          timeoutSeconds: 3
+
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+
+                
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: wall-secret
+                  key: DB_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wall-secret
+                  key: DB_PASSWORD
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: wall-configmap
+                  key: DB_NAME
+          volumeMounts:
+            - name: wall-db-data
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: wall-db-data
+          persistentVolumeClaim:
+            claimName: wall-db-data
+

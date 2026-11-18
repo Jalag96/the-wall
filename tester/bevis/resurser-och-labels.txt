@@ -1,0 +1,15 @@
+===== DEPLOYMENTS =====
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
+wall-db    1/1     1            1           5d21h   app.kubernetes.io/part-of=the-wall,app=wall-db
+wall-web   2/2     2            2           5d21h   app.kubernetes.io/part-of=the-wall,app=wall-web
+
+===== PODS =====
+NAME                        READY   STATUS    RESTARTS   AGE   LABELS
+wall-db-5bf65ccfd-78pzp     1/1     Running   0          21h   app.kubernetes.io/part-of=the-wall,app=wall-db,pod-template-hash=5bf65ccfd,topology.kubernetes.io/region=eu-north-1,topology.kubernetes.io/zone=eu-north-1a
+wall-web-645576cb66-2kcrw   1/1     Running   0          21h   app.kubernetes.io/part-of=the-wall,app=wall-web,pod-template-hash=645576cb66,topology.kubernetes.io/region=eu-north-1,topology.kubernetes.io/zone=eu-north-1a
+wall-web-645576cb66-djh5l   1/1     Running   0          21h   app.kubernetes.io/part-of=the-wall,app=wall-web,pod-template-hash=645576cb66,topology.kubernetes.io/region=eu-north-1,topology.kubernetes.io/zone=eu-north-1a
+
+===== SERVICES =====
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     LABELS
+wall-db    ClusterIP   172.30.204.56   <none>        5432/TCP   5d21h   app.kubernetes.io/part-of=the-wall
+wall-web   ClusterIP   172.30.47.61    <none>        80/TCP     5d21h   app.kubernetes.io/part-of=the-wall

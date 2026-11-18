@@ -1,0 +1,15 @@
+# Första setup av image
+FROM python:3.14-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Förbered start
+COPY app.py .
+COPY start.sh .
+RUN chmod +x start.sh
+
+# Start
+EXPOSE 8080
+USER 1001
+CMD ["./start.sh"]

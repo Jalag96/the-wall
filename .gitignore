@@ -1,0 +1,9 @@
+# Kubernetes Secrets
+manifests/wall-secret.yaml
+
+# Historiska manifest – endast lokal referens
+manifests/old_wall/
+
+# Local files
+*.log
+.env
