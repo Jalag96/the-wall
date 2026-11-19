@@ -1,0 +1,26 @@
+KRAV  – TITEL
+Datum: 2026-
+
+1.
+
+Kommando:
+oc get pods -l app=wall-web -o wide
+
+Resultat:
+
+2. Kontroll
+
+Kommando:
+
+Resultat:
+
+3. Kontroll
+
+Kommando:
+
+Resultat:
+
+SLUTSATS:
+
+Status: 
+

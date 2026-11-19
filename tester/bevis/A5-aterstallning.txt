@@ -1,0 +1,12 @@
+KRAV A5 – ÅTERSKAPANDE AV MILJÖ
+
+- Backup skapades med backup-db.sh.
+- Installationen togs bort med remove-deploy.sh.
+- Deployment, Services, Route och PVC togs bort.
+- Secret skapades på nytt.
+- deploy.sh kördes för att skapa miljön igen.
+- En ny tom PVC skapades.
+- Webbapplikationen startade och fungerade.
+- Tidigare meddelanden saknades eftersom databasen var tom.
+
+**Resultat:** Miljön kunde återskapas från början med en ny persistent volym.

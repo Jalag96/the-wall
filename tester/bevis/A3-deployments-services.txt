@@ -1,0 +1,16 @@
+KRAV A3 – DEPLOYMENTS OCH SERVICES
+Datum: 2026-11-18
+
+Kommando:
+oc get deployments wall-web wall-db
+oc get services wall-web wall-db -o yaml
+
+Resultat:
+- wall-web Deployment: 2/2 Ready
+- wall-db Deployment: 1/1 Ready
+- wall-web Service: ClusterIP, TCP 80 -> 8080
+- wall-db Service: ClusterIP, TCP 5432 -> 5432
+
+Båda Services har interna ClusterIP-adresser och saknar
+extern IP-adress.
+

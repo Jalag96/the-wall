@@ -1,0 +1,44 @@
+
+KRAV B – ROUTE, TLS OCH HTTP-REDIRECT
+Datum: 2026-11-18
+
+1. Ursprunglig Route-konfiguration
+- TLS termination: edge
+- insecureEdgeTerminationPolicy saknades.
+- HTTP gav 503.
+- HTTPS gav 200 OK.
+
+2. Genomförd ändring
+Kommandot:
+oc patch route wall-web --type=merge \
+  -p '{"spec":{"tls":{"insecureEdgeTerminationPolicy":"Redirect"}}}'
+
+Resultat:
+route.route.openshift.io/wall-web patched
+
+3. Verifiering av konfiguration
+oc get route wall-web -o jsonpath='{.spec.tls}'
+
+Resultat:
+{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"}
+
+4. Test av HTTP
+curl -sSI "http://$ROUTE"
+
+Resultat:
+HTTP/1.1 302 Found
+location: https://wall-web-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/
+
+5. Test av fullständig omdirigering
+curl -sSL -o /dev/null -w "Final URL: %{url_effective}\nFinal status: %{http_code}\n" "http://$ROUTE"
+
+Resultat:
+Final URL: https://wall-web-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/
+Final status: 200
+
+SLUTSATS:
+HTTP-trafik omdirigeras till HTTPS av OpenShift Routern.
+HTTPS-förfrågan når webbapplikationen och ger HTTP 200.
+
+Status: Verifierat för wall-web.
+

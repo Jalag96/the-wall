@@ -1,0 +1,18 @@
+KRAV A2 – EGEN CONTAINERIMAGE
+
+Git commit:
+a5059ac26f53dbf99491adb573438212a19723ca
+
+Byggkommando:
+podman build -t docker.io/jalag004/the-wall:v2 .
+
+Publiceringskommando:
+podman push docker.io/jalag004/the-wall:v2
+
+Image:
+docker.io/jalag004/the-wall:v2
+
+ImageID från körande Pods:
+sha256:177ea7427e1a54c5b70ce6dc4a7067483078b29b5a7cd26d1d8f3735f9541182
+
+Båda wall-web-poddarna använder samma imageID.

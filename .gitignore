@@ -7,3 +7,4 @@ manifests/old_wall/
 # Local files
 *.log
 .env
+backups/

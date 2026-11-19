@@ -1,0 +1,44 @@
+KRAV A1 – CONTAINERIMAGE OCH APPLIKATIONSSTART
+Datum: 2026-11-18
+
+1. Kontroll av webb-pods
+
+Kommando:
+oc get pods -l app=wall-web -o wide
+
+Resultat:
+- Två webb-pods körs.
+- Båda har READY 1/1.
+- Båda har STATUS Running.
+- Båda har 0 restarts.
+- Poddarna kör på två olika klusternoder.
+
+2. Kontroll av databasinitiering och Gunicorn
+
+Kommando:
+oc logs deployment/wall-web --tail=80
+
+Resultat:
+Database initialized
+Starting gunicorn 23.0.0
+Listening at: http://0.0.0.0:8080
+Using worker: sync
+Booting worker with pid: 3
+
+3. Kontroll av process 1
+
+Kommando:
+oc exec deployment/wall-web -- sh -c 'tr "\000" " " < /proc/1/cmdline; echo'
+
+Resultat:
+/usr/local/bin/python3.14 /usr/local/bin/gunicorn --bind 0.0.0.0:8080 app:app
+
+SLUTSATS:
+- Databasinitieringen genomförs före Gunicorn-start.
+- Gunicorn 23.0.0 startar korrekt.
+- Gunicorn lyssnar på 0.0.0.0:8080.
+- Gunicorn kör som PID 1, vilket bekräftar att exec används i startskriptet.
+- Två webb-pods är Running och Ready.
+
+Status: Funktionell uppstart verifierad.
+
