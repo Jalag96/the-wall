@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-cd "$(dirname "$0")"
-
+cd "$(dirname "$0")/.."
 echo "=== The Wall Deployment ==="
 
 # Kontrollera att Secret redan finns

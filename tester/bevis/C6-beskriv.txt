@@ -1,0 +1,4 @@
+Just nu får vem som helst lägga upp ett meddelande sålänge de känner till adressen https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/. 
+
+Vill vi begränsa åtkomsten så finns det väldigt olika sätt att göra det på. Man kan skapa en inloggningsfunktion som kräver en token eller lösenord direkt från ägaren, man stänga av access för utomstående IP-adresser, skapa en begränsad länk som fungerar en viss tid etc.
+

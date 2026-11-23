@@ -1,0 +1,15 @@
+B5 – Nätverkssegmentering, databasautentisering och behörigheter
+
+NetworkPolicy begränsar vilka Pods som får kommunicera med databasen. I vår konfiguration tillåts webbapplikationens Pods ansluta till PostgreSQL på TCP-port 5432, medan andra Pods blockeras.
+
+Databasautentisering fungerar som ytterligare ett säkerhetslager. Även om en Pod tillåts nå databasen krävs fortfarande giltiga inloggningsuppgifter för att autentisera sig. Nätverkssegmenteringen styr alltså vem som kan nå databasen, medan PostgreSQL kontrollerar vem som får 
+logga in.
+
+En användare med höga projekträttigheter kan exempelvis ändra eller ta bort NetworkPolicies, ändra Deployment-konfigurationer och Pod-labels, skapa nya Pods samt läsa eller ändra Secrets om behörigheterna tillåter det. Detta kan påverka både applikationens funktion och säkerhet.
+
+Därför bör projektbehörigheter begränsas enligt principen om minsta möjliga behörighet (Least Privilege). NetworkPolicy och databasens inloggning ger ett extra skydd, men det är också viktigt att se till att rätt personer har behörighet att ändra projektets inställningar och 
+resurser.
+
+Relaterade bevis:
+- B3-ingress.txt – NetworkPolicy och ingressregler.
+- B4-network-test.txt – verifiering av nätverksisolering.

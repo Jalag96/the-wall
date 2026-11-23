@@ -1,0 +1,13 @@
+Kommando: oc get configmap wall-configmap -o yaml
+
+Output:
+
+DB_HOST: wall-db
+DB_NAME: walldb
+DB_PORT: "5432"
+
+Kommando: oc get deployment wall-web -o yaml | grep config
+
+Output: 
+
+Verifieras att DB hämtas från wall-configmap via configMapKeyRef.

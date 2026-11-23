@@ -1,0 +1,18 @@
+Kommando: curl -k -i -d "author=OKD-test&message=Testar skrivning via HTTPS" https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/post
+
+
+Output:
+
+HTTP/1.1 302 FOUND
+server: gunicorn
+date: Mon, 23 Nov 2026 09:12:34 GMT
+content-type: text/html; charset=utf-8
+content-length: 189
+location: /
+set-cookie: 151cc44230420003098e0aa91e740495=ef9890f7cebe68fec291a80a3f1fd6ad; path=/; HttpOnly; Secure; SameSite=None
+
+<!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.

@@ -1,0 +1,22 @@
+Kommando: oc get routes
+
+Output:
+NAME   HOST/PORT                                                         SERVICES   PORT   TERMINATION
+wall   wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se    wall-web   http   edge/Redirect
+
+
+HTTPS-test: curl -k -I https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se
+
+Output:
+HTTP/1.1 200 OK
+server: gunicorn
+
+
+HTTP-test: curl -I http://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se
+
+Output:
+HTTP/1.1 302 Found
+location: https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/
+
+
+Resultat: Godkänt. Edge Route fungerar, HTTPS ger 200 OK och HTTP omdirigeras automatiskt till HTTPS.

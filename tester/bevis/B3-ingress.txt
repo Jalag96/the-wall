@@ -1,0 +1,17 @@
+Kommando: oc describe networkpolicy wall-db-ingress
+
+Output:
+
+Name:         wall-db-ingress
+Namespace:    student-jacob-lagstrom-lerniastudent-se
+Created on:   2026-11-19 14:29:38 +0000 UTC
+Labels:       app.kubernetes.io/part-of=the-wall
+Annotations:  <none>
+Spec:
+  PodSelector:     app=wall-db
+  Allowing ingress traffic:
+    To Port: 5432/TCP
+    From:
+      PodSelector: app=wall-web
+  Not affecting egress traffic
+  Policy Types: Ingress

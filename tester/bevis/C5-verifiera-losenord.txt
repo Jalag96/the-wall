@@ -1,0 +1,28 @@
+Detta har gjorts efter byte av lösenord vilket betyder att databasen fungerar trots det.
+
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ curl -k -i -d "author=C5-test&message=Test efter lösenordsbyte" https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/post
+HTTP/1.1 302 FOUND
+server: gunicorn
+date: Mon, 23 Nov 2026 15:26:00 GMT
+content-type: text/html; charset=utf-8
+content-length: 189
+location: /
+set-cookie: 151cc44230420003098e0aa91e740495=91fb5b0b0ca2ae2d55611ad9ea20a224; path=/; HttpOnly; Secure; SameSite=None
+
+<!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc exec deployment/wall-db -- psql -U walluser -d walldb -c "SELECT id, author, message FROM messages ORDER BY id DESC LIMIT 3;"
+ id |  author  |          message
+----+----------+----------------------------
+ 10 | C5-test  | Test efter lösenordsbyte
+  9 | Jacob    | Fungerar deet?
+  8 | OKD-test | Testar skrivning via HTTPS
+(3 rows)
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$
+

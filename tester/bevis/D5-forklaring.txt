@@ -1,0 +1,45 @@
+Punkt 1 – Webb-Pods och gemensam data
+
+Vi har två webb-Pods som kör samma Flask-applikation.
+För att verifiera att lagringen är gemensam kontrollerade vi att
+en ny webb-Pod kunde läsa meddelanden som redan fanns i databasen.
+
+Webb-Poddarna lagrar inte meddelandena lokalt. Istället ansluter
+de till samma PostgreSQL-databas via tjänsten wall-db.
+
+Det innebär att oavsett vilken webb-Pod som tar emot en förfrågan
+hämtas meddelandena från samma databas.
+
+Webbskiktet kan därför skalas separat. Om fler användare besöker
+applikationen kan vi starta fler webb-Pods utan att behöva skapa
+fler databaser. OpenShift Service fördelar trafiken mellan
+webb-Poddarna, medan alla använder samma databas.
+
+
+Punkt 2 – Databasinstans, Recreate och volymens access mode
+
+Vi använder endast en instans av PostgreSQL eftersom alla
+webb-Pods behöver arbeta mot samma databas och samma lagrade data.
+
+Om vi hade flera oberoende databasinstanser skulle de kunna få
+olika innehåll och behöva någon form av replikering för att hålla
+informationen synkroniserad.
+
+Vi använder Recreate som uppdateringsstrategi för databasen.
+Det innebär att den gamla databaspodden stoppas innan en ny
+skapas. På så sätt undviker vi att två databasinstanser samtidigt
+försöker använda samma lagringsvolym.
+
+Vår PVC använder access mode ReadWriteOnce (RWO). Det innebär
+att volymen kan monteras med läs- och skrivåtkomst av en nod
+åt gången. Det är lämpligt för vår PostgreSQL-instans som använder
+en gemensam beständig volym.
+
+Om volymen skulle gå förlorad räcker det inte med en PVC för
+att återställa informationen. En PVC ger tillgång till lagring,
+men är inte en backup.
+
+Vi behöver därför även ha säkerhetskopior av databasen, exempelvis
+med vårt backup-script som skapar SQL-dumpar. Om volymen går
+förlorad kan vi skapa en ny volym och databas och sedan importera
+en tidigare backup för att återställa meddelandena.

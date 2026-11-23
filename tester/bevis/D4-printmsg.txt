@@ -1,0 +1,88 @@
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc exec wall-web-596c544665-9jjth -- python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8080').read().decode())" | tail -30
+            <p>Snyggt jobbat Jacob!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">kubectl</span>
+            <span class="date">2026-11-13 14:01:06.189065</span>
+            <p>hej!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+
+    </div>
+</body>
+</html>
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc exec wall-web-596c544665-9bsb4q -- python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8080').read().decode())" | tail -30
+            <p>Snyggt jobbat Jacob!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">kubectl</span>
+            <span class="date">2026-11-13 14:01:06.189065</span>
+            <p>hej!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+
+    </div>
+</body>
+</html>
+
+
+
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc exec wall-web-596c544665-bsb4q -- python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8080').read().decode())" | tail -20
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+
+    </div>
+</body>
+</html>
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$

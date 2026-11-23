@@ -1,0 +1,5 @@
+Både webbappen och databasen använder runAsNonRoot: true och allowPrivilegeEscalation: false.
+
+Verifierad UID för båda komponenterna är 1000860000. De körs alltså som icke-root-användare. Båda har GID 0 (root), men det innebär inte att processerna körs som root.
+
+Resultat: Båda komponenterna körs som icke-root och har privilege escalation avstängt.

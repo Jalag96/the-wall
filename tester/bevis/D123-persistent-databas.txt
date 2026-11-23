@@ -1,0 +1,39 @@
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc get pvc
+NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+wall-db-data   Bound    pvc-f507b913-90d0-4f82-ab38-66ee5d6c2680   1Gi        RWO            gp3-csi        <unset>                 4h
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ ooc exec deployment/wall-db -- psql -U walluser -d walldb -c "SELECT id, author, message FROM messages ORDER BY id DESC LIMIT 3;"
+ id |  author  |          message
+----+----------+----------------------------
+ 10 | C5-test  | Test efter lösenordsbyte
+  9 | Jacob    | Fungerar deet?
+  8 | OKD-test | Testar skrivning via HTTPS
+(3 rows)
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc get pvc
+NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+wall-db-data   Bound    pvc-f507b913-90d0-4f82-ab38-66ee5d6c2680   1Gi        RWO            gp3-csi        <unset>                 4h2m
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc get pods -l app=wall-db -o custom-columns=NAME:.metadata.name,UID:.metadata.uid
+NAME                      UID
+wall-db-5bf65ccfd-4277c   3f255056-b3f2-47df-8024-05dd869aa1c6
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc get pvc -o custom-columns=NAME:.metadata.name,UID:.metadata.uid
+NAME           UID
+wall-db-data   f507b913-90d0-4f82-ab38-66ee5d6c2680
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc delete pod wall-db-5bf65ccfd-4277c
+pod "wall-db-5bf65ccfd-4277c" deleted from student-jacob-lagstrom-lerniastudent-se namespace
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc get pods -l app=wall-db
+NAME                      READY   STATUS    RESTARTS   AGE
+wall-db-5bf65ccfd-glvk8   1/1     Running   0          19s
+
+[student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc exec deployment/wall-db -- psql -U walluser -d walldb -c "SELECT id, author, message FROM messages ORDER BY id DESC LIMIT 3;"
+ id |  author  |          message
+----+----------+----------------------------
+ 10 | C5-test  | Test efter lösenordsbyte
+  9 | Jacob    | Fungerar deet?
+  8 | OKD-test | Testar skrivning via HTTPS
+(3 rows)
+
+

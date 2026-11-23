@@ -1,0 +1,15 @@
+Kommando: oc get pod test-client --show-labels
+
+Output: test-client   1/1   Running   0   app=test-client
+
+Kommando: oc exec test-client -- curl -v --connect-timeout 5 --max-time 5 http://wall-web/
+
+Output:  
+*Host wall-web:80 was resolved.
+*IPv4: 172.30.61.249
+*Connected to wall-web (172.30.61.249) port 80
+< HTTP/1.1 200 OK
+
+Kommando: oc exec test-client -- bash -c 'timeout 5 bash -c "</dev/tcp/wall-db/5432"'
+
+Output: command terminated with exit code 124
