@@ -1,0 +1,54 @@
+Tue Nov 24 02:23:30 PM UTC 2026
+NAME                        READY   STATUS             RESTARTS       AGE
+wall-web-596c544665-9jjth   1/1     Running            0              23h
+wall-web-596c544665-bsb4q   1/1     Running            0              23h
+wall-web-85d89897c6-zjw8t   0/1     CrashLoopBackOff   5 (100s ago)   10m
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+wall-web   2/2     1            2           26h
+NAME                  DESIRED   CURRENT   READY   AGE
+wall-web-596c544665   2         2         2       23h
+wall-web-646565df45   0         0         0       4h8m
+wall-web-85d89897c6   1         1         0       10m
+wall-web-bc8d6c88     0         0         0       26h
+LAST SEEN   TYPE      REASON              OBJECT                           MESSAGE
+53m         Warning   Unhealthy           pod/wall-web-596c544665-9jjth    Readiness probe failed: HTTP probe failed with statuscode: 503
+53m         Warning   Unhealthy           pod/wall-web-596c544665-bsb4q    Readiness probe failed: HTTP probe failed with statuscode: 503
+10m         Normal    Scheduled           pod/wall-web-85d89897c6-zjw8t    Successfully assigned student-jacob-lagstrom-lerniastudent-se/wall-web-85d89897c6-zjw8t to ip-10-0-13-80.eu-north-1.compute.internal
+10m         Normal    AddedInterface      pod/wall-web-85d89897c6-zjw8t    Add eth0 [10.131.0.170/23] from ovn-kubernetes
+2m38s       Normal    Pulled              pod/wall-web-85d89897c6-zjw8t    Container image "docker.io/jalag004/the-wall:v2" already present on machine and can be accessed by the pod
+2m38s       Normal    Created             pod/wall-web-85d89897c6-zjw8t    Container created
+2m38s       Normal    Started             pod/wall-web-85d89897c6-zjw8t    Container started
+4m50s       Warning   Unhealthy           pod/wall-web-85d89897c6-zjw8t    Startup probe failed: Get "http://10.131.0.170:8080/health": dial tcp 10.131.0.170:8080: connect: connection refused
+7m57s       Warning   BackOff             pod/wall-web-85d89897c6-zjw8t    Back-off restarting failed container wall-web in pod wall-web-85d89897c6-zjw8t_student-jacob-lagstrom-lerniastudent-se(dc332873-36c4-4306-8ca2-4147f7f3b3d3)
+2m10s       Normal    Killing             pod/wall-web-85d89897c6-zjw8t    Container wall-web failed startup probe, will be restarted
+10m         Normal    SuccessfulCreate    replicaset/wall-web-85d89897c6   Created pod: wall-web-85d89897c6-zjw8t
+10m         Normal    ScalingReplicaSet   deployment/wall-web              Scaled up replica set wall-web-85d89897c6 from 0 to 1
+Waiting for database (1/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (2/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (3/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (4/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (5/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (6/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (7/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (8/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (9/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (10/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (11/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (12/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (13/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (14/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (15/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (16/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (17/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (18/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (19/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (20/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (21/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (22/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (23/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (24/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (25/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (26/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (27/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (28/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist
+Waiting for database (29/30): connection failed: connection to server at "172.30.30.9", port 5432 failed: FATAL:  database "nonexistent_db" does not exist

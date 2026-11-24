@@ -1,0 +1,20 @@
+INCIDENT 1 – UNDER FELET
+Datum: 2026-11-24
+
+Service-selectorn ändrades till app=felaktig-db.
+
+DB Service:
+ENDPOINTS: <none>
+
+Databas-Poden fortsatte vara 1/1 Running.
+
+Webb-Podar:
+wall-web-596c544665-9jjth   0/1 Running   0 restarts
+wall-web-596c544665-bsb4q   0/1 Running   0 restarts
+
+Direkt test via port-forward:
+
+GET /health -> HTTP 200
+GET /        -> HTTP 503
+
+Webbprocessen svarade fortfarande, men databasberoende funktioner fungerade inte.

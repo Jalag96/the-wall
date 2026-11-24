@@ -1,0 +1,158 @@
+Tue Nov 24 02:11:27 PM UTC 2026
+NAME                        READY   STATUS      RESTARTS   AGE
+load-generator              0/1     Completed   0          5h2m
+wall-db-7b6db5fc57-sshnp    1/1     Running     0          4h24m
+wall-web-596c544665-9jjth   1/1     Running     0          23h
+wall-web-596c544665-bsb4q   1/1     Running     0          23h
+NAME      ENDPOINTS           AGE
+wall-db   10.130.1.129:5432   26h
+apiVersion: v1
+data:
+  DB_HOST: wall-db
+  DB_NAME: walldb
+  DB_PORT: "5432"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"DB_HOST":"wall-db","DB_NAME":"walldb","DB_PORT":"5432"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"the-wall"},"name":"wall-configmap","namespace":"student-jacob-lagstrom-lerniastudent-se"}}
+  creationTimestamp: "2026-11-23T11:40:52Z"
+  labels:
+    app.kubernetes.io/part-of: the-wall
+  name: wall-configmap
+  namespace: student-jacob-lagstrom-lerniastudent-se
+  resourceVersion: "23417430"
+  uid: b87d1422-696d-4372-a1fe-0543da01abfe
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "4"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"wall-web","app.kubernetes.io/part-of":"the-wall"},"name":"wall-web","namespace":"student-jacob-lagstrom-lerniastudent-se"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"wall-web"}},"template":{"metadata":{"labels":{"app":"wall-web","app.kubernetes.io/part-of":"the-wall"}},"spec":{"containers":[{"args":["exit 1"],"command":["/bin/sh","-c"],"env":[{"name":"DB_HOST","valueFrom":{"configMapKeyRef":{"key":"DB_HOST","name":"wall-configmap"}}},{"name":"DB_PORT","valueFrom":{"configMapKeyRef":{"key":"DB_PORT","name":"wall-configmap"}}},{"name":"DB_NAME","valueFrom":{"configMapKeyRef":{"key":"DB_NAME","name":"wall-configmap"}}},{"name":"DB_USER","valueFrom":{"secretKeyRef":{"key":"DB_USER","name":"wall-secret"}}},{"name":"DB_PASSWORD","valueFrom":{"secretKeyRef":{"key":"DB_PASSWORD","name":"wall-secret"}}}],"image":"docker.io/jalag004/the-wall:v3","livenessProbe":{"failureThreshold":6,"httpGet":{"path":"/health","port":8080},"periodSeconds":10},"name":"wall-web","ports":[{"containerPort":8080,"protocol":"TCP"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/","port":8080},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"200m","memory":"256Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"runAsNonRoot":true},"startupProbe":{"failureThreshold":30,"httpGet":{"path":"/health","port":8080},"periodSeconds":5}}]}}}}
+  creationTimestamp: "2026-11-23T11:40:53Z"
+  generation: 6
+  labels:
+    app: wall-web
+    app.kubernetes.io/part-of: the-wall
+  name: wall-web
+  namespace: student-jacob-lagstrom-lerniastudent-se
+  resourceVersion: "23984727"
+  uid: f59fc56f-42ff-41d5-a040-735ab2c277a6
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: wall-web
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2026-11-23T14:25:14Z"
+      labels:
+        app: wall-web
+        app.kubernetes.io/part-of: the-wall
+    spec:
+      containers:
+      - env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DB_HOST
+              name: wall-configmap
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT
+              name: wall-configmap
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: DB_NAME
+              name: wall-configmap
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              key: DB_USER
+              name: wall-secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: wall-secret
+        image: docker.io/jalag004/the-wall:v2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: wall-web
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2026-11-23T11:40:53Z"
+    lastUpdateTime: "2026-11-24T10:19:00Z"
+    message: ReplicaSet "wall-web-596c544665" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-11-24T13:31:21Z"
+    lastUpdateTime: "2026-11-24T13:31:21Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 6
+  readyReplicas: 2
+  replicas: 2
+  terminatingReplicas: 0
+  updatedReplicas: 2

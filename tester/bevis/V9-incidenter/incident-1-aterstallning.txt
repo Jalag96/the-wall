@@ -1,0 +1,15 @@
+INCIDENT 1 – ÅTERSTÄLLNING
+Datum: 2026-11-24
+
+Service-selectorn återställdes till app=wall-db.
+
+DB Service endpoint:
+10.130.1.129:5432
+
+Webb-Podar:
+wall-web-596c544665-9jjth   1/1 Running   0 restarts
+wall-web-596c544665-bsb4q   1/1 Running   0 restarts
+
+Applikationen återgick till normalt läge.
+GET /health och GET / fungerade igen.
+Skrivning och läsning verifierades efter återställningen.

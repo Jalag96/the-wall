@@ -1,0 +1,16 @@
+##Rollback-test
+
+2026-11-24
+
+Efter den misslyckade rollbacken av v3 kördes:
+
+oc rollout undo deployment/wall-web
+
+rollback återställdes:
+
+deployment.apps/wall-web rolled back
+deployment "wall-web" successfully rolled out
+
+Kontroll visade att v2 åter var aktiv med två tillgängliga webb-Pods (2/2). Båda Podarna visade 1/1 Running.
+
+Resultat: Rollback fungerade och applikationen återställdes till den fungerande versionen.

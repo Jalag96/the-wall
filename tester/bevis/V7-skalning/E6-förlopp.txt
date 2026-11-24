@@ -1,0 +1,6 @@
+[student@falcon-walrus-26 ~/the-wall$ oc get hpa wall-web --watch
+NAME       REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
+wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
+wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
+wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         2          21h

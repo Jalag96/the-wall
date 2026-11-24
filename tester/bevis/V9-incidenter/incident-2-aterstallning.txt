@@ -1,0 +1,179 @@
+Tue Nov 24 02:26:30 PM UTC 2026
+NAME                       READY   STATUS    RESTARTS   AGE
+wall-web-8dfb66dfb-4cbx4   1/1     Running   0          2m54s
+wall-web-8dfb66dfb-vnwdn   1/1     Running   0          2m48s
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+wall-web   2/2     2            2           26h
+NAME      ENDPOINTS           AGE
+wall-db   10.130.1.129:5432   26h
+HTTP/1.1 200 OK
+server: gunicorn
+date: Tue, 24 Nov 2026 14:26:30 GMT
+content-type: application/json
+content-length: 49
+set-cookie: 151cc44230420003098e0aa91e740495=0132a9cda17778e33738f2c488771b90; path=/; HttpOnly; Secure; SameSite=None
+
+{"pod":"wall-web-8dfb66dfb-4cbx4","status":"ok"}
+HTTP/1.1 200 OK
+server: gunicorn
+date: Tue, 24 Nov 2026 14:26:30 GMT
+content-type: text/html; charset=utf-8
+content-length: 4794
+set-cookie: 151cc44230420003098e0aa91e740495=0132a9cda17778e33738f2c488771b90; path=/; HttpOnly; Secure; SameSite=None
+
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Wall | OKD Lab</title>
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: monospace;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 { color: #58a6ff; font-size: 3rem; }
+        .subtitle { color: #8b949e; }
+        .box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        input, textarea {
+            box-sizing: border-box;
+            width: 100%;
+            background: #0d1117;
+            color: white;
+            border: 1px solid #30363d;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font: inherit;
+        }
+        button {
+            background: #238636;
+            color: white;
+            border: 0;
+            border-radius: 5px;
+            padding: 12px 24px;
+            cursor: pointer;
+        }
+        .message {
+            border-bottom: 1px solid #30363d;
+            padding: 15px 0;
+            overflow-wrap: anywhere;
+        }
+        .message:last-child { border-bottom: none; }
+        .author { color: #58a6ff; font-weight: bold; }
+        .date { color: #8b949e; font-size: 0.8rem; }
+        .pod { color: #3fb950; }
+        .error { color: #f85149; }
+    </style>
+</head>
+<body>
+    <h1>THE WALL_</h1>
+    <p class="subtitle">A distributed message board powered by OKD</p>
+
+    <div class="box">
+        <strong>System information</strong>
+        <p>Pod: <span class="pod">wall-web-8dfb66dfb-4cbx4</span></p>
+        <p>Database: wall-db</p>
+        <p>Messages: 12</p>
+    </div>
+
+    <div class="box">
+        <h2>Post a message</h2>
+        <form method="POST" action="/post">
+            <input name="author" placeholder="Your name"
+                   maxlength="50" required>
+            <textarea name="message" placeholder="What's on your mind?"
+                      maxlength="500" required></textarea>
+            <button type="submit">POST MESSAGE</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <h2>Messages</h2>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:25:59.480367</span>
+            <p>Test tvÅÅÅÅ</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:15:18.692797</span>
+            <p>Test</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">C5-test</span>
+            <span class="date">2026-11-23 15:26:00.362899</span>
+            <p>Test efter lösenordsbyte</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-23 14:52:49.466046</span>
+            <p>Fungerar deet?</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:12:34.765355</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:11:21.953694</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-18 14:05:12.865283</span>
+            <p>Tack Jonas!</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jonas</span>
+            <span class="date">2026-11-18 08:35:52.682387</span>
+            <p>Snyggt jobbat Jacob!</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">kubectl</span>
+            <span class="date">2026-11-13 14:01:06.189065</span>
+            <p>hej!</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+        
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+        
+    </div>
+</body>
+</html>

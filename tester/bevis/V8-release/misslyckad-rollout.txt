@@ -1,0 +1,108 @@
+NAME                        READY   STATUS             RESTARTS      AGE
+wall-web-596c544665-9jjth   1/1     Running            0             19h
+wall-web-596c544665-bsb4q   1/1     Running            0             19h
+wall-web-646565df45-8nf6b   0/1     CrashLoopBackOff   5 (80s ago)   4m16s
+Name:             wall-web-646565df45-8nf6b
+Namespace:        student-jacob-lagstrom-lerniastudent-se
+Priority:         0
+Service Account:  default
+Node:             ip-10-0-13-80.eu-north-1.compute.internal/10.0.13.80
+Start Time:       Tue, 24 Nov 2026 10:14:32 +0000
+Labels:           app=wall-web
+                  app.kubernetes.io/part-of=the-wall
+                  pod-template-hash=646565df45
+                  topology.kubernetes.io/region=eu-north-1
+                  topology.kubernetes.io/zone=eu-north-1a
+Annotations:      k8s.ovn.org/pod-networks:
+                    {"default":{"ip_addresses":["10.131.0.160/23"],"mac_address":"0a:58:0a:83:00:a0","gateway_ips":["10.131.0.1"],"routes":[{"dest":"10.128.0....
+                  k8s.v1.cni.cncf.io/network-status:
+                    [{
+                        "name": "ovn-kubernetes",
+                        "interface": "eth0",
+                        "ips": [
+                            "10.131.0.160"
+                        ],
+                        "mac": "0a:58:0a:83:00:a0",
+                        "default": true,
+                        "dns": {}
+                    }]
+                  kubectl.kubernetes.io/restartedAt: 2026-11-23T14:25:14Z
+                  openshift.io/scc: restricted-v2
+                  seccomp.security.alpha.kubernetes.io/pod: runtime/default
+                  security.openshift.io/validated-scc-subject-type: user
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.131.0.160
+IPs:
+  IP:           10.131.0.160
+Controlled By:  ReplicaSet/wall-web-646565df45
+Containers:
+  wall-web:
+    Container ID:  cri-o://b9cfaa1f3bab5a186456542cff72febb09e7ff57dec848bbe7cf1d3fab711c61
+    Image:         docker.io/jalag004/the-wall:v3
+    Image ID:      docker.io/jalag004/the-wall@sha256:177ea7427e1a54c5b70ce6dc4a7067483078b29b5a7cd26d1d8f3735f9541182
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      /bin/sh
+      -c
+    Args:
+      exit 1
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Tue, 24 Nov 2026 10:17:28 +0000
+      Finished:     Tue, 24 Nov 2026 10:17:28 +0000
+    Ready:          False
+    Restart Count:  5
+    Limits:
+      cpu:     500m
+      memory:  512Mi
+    Requests:
+      cpu:      200m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=0s timeout=1s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/ delay=0s timeout=1s period=5s #success=1 #failure=3
+    Startup:    http-get http://:8080/health delay=0s timeout=1s period=5s #success=1 #failure=30
+    Environment:
+      DB_HOST:      <set to the key 'DB_HOST' of config map 'wall-configmap'>  Optional: false
+      DB_PORT:      <set to the key 'DB_PORT' of config map 'wall-configmap'>  Optional: false
+      DB_NAME:      <set to the key 'DB_NAME' of config map 'wall-configmap'>  Optional: false
+      DB_USER:      <set to the key 'DB_USER' in secret 'wall-secret'>         Optional: false
+      DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'wall-secret'>     Optional: false
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-zj4dr (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-zj4dr:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+    ConfigMapName:           openshift-service-ca.crt
+    Optional:                false
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason          Age                   From               Message
+  ----     ------          ----                  ----               -------
+  Normal   Scheduled       4m15s                 default-scheduler  Successfully assigned student-jacob-lagstrom-lerniastudent-se/wall-web-646565df45-8nf6b to ip-10-0-13-80.eu-north-1.compute.internal
+  Normal   AddedInterface  4m15s                 multus             Add eth0 [10.131.0.160/23] from ovn-kubernetes
+  Normal   Pulling         4m15s                 kubelet            spec.containers{wall-web}: Pulling image "docker.io/jalag004/the-wall:v3"
+  Normal   Pulled          4m14s                 kubelet            spec.containers{wall-web}: Successfully pulled image "docker.io/jalag004/the-wall:v3" in 1.06s (1.06s including waiting). Image size: 153998979 bytes.
+  Normal   Created         80s (x6 over 4m14s)   kubelet            spec.containers{wall-web}: Container created
+  Normal   Started         80s (x6 over 4m14s)   kubelet            spec.containers{wall-web}: Container started
+  Normal   Pulled          80s (x5 over 4m14s)   kubelet            spec.containers{wall-web}: Container image "docker.io/jalag004/the-wall:v3" already present on machine and can be accessed by the pod
+  Warning  BackOff         11s (x17 over 4m13s)  kubelet            spec.containers{wall-web}: Back-off restarting failed container wall-web in pod wall-web-646565df45-8nf6b_student-jacob-lagstrom-lerniastudent-se(d59aaf91-4d7f-44e8-877d-b66ef76383ff)
