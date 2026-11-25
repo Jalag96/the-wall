@@ -1,3 +1,21 @@
+# Incident 2 – Under incidenten
+Datum: 2026-11-24
+
+För att simulera ett felaktigt databasnamn ändrades DB_NAME
+i webbapplikationens Deployment till nonexistent_db.
+
+Kommando:
+oc set env deployment/wall-web DB_NAME=nonexistent_db
+
+Ändringen startade en ny rollback. De nya Podarna kunde
+inte längre få en databaskopplingen eftersom databasen inte
+existerade. Detta ledde till att applikationen inte startade
+och att containern hamnade i en omstartsloop.
+
+
+
+Terminalutskrifterna från felsökningen:
+
 Tue Nov 24 02:23:30 PM UTC 2026
 NAME                        READY   STATUS             RESTARTS       AGE
 wall-web-596c544665-9jjth   1/1     Running            0              23h

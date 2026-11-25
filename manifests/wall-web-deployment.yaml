@@ -18,9 +18,7 @@ spec:
     spec:
       containers:
         - name: wall-web
-          image: docker.io/jalag004/the-wall:v3
-          command: ["/bin/sh", "-c"]
-          args: ["exit 1"]
+          image: docker.io/jalag004/the-wall:v2
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false

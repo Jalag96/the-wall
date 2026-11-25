@@ -1,0 +1,11 @@
+## GIT
+
+git status
+
+git add .
+
+git commit -m "<din text>"
+
+git push origin main
+
+git status

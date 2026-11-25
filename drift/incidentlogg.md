@@ -14,7 +14,7 @@ Före incidenten fungerade applikationen normalt:
 - GET /health och GET / returnerade HTTP 200.
 - Databasens Service hade en aktiv endpoint.
 
-2. Hypotes
+2. Hypotesen
 
 Misstanken var att webbapplikationen inte kunde nå databasen via Kubernetes Service. För att testa detta ändrades wall-db Service selector från app: wall-db till app: felaktig-db.
 
@@ -83,8 +83,6 @@ Däremot fungerade /health fortfarande eftersom den inte behöver någon databas
 
 
 ## Incident 2 – Felaktigt databasnamn
-
-Detta test fick jag inspiration från incidentpasset "DB_ABSUER".
 
 2026-11-24
 

@@ -1,7 +1,7 @@
 INCIDENT 1 – FÖRE FELET
 Datum: 2026-11-24
 
-Kontroll före ändring av wall-db Service-selector.
+Kontroll före ändring av wall-db Service
 
 Databas:
 wall-db-7b6db5fc57-sshnp   1/1 Running   0 restarts
