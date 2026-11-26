@@ -1,13 +1,20 @@
-Kommando: oc get configmap wall-configmap -o yaml
+KRAV C1 – CONFIGMAP
 
-Output:
+Kommando:
+oc get configmap wall-configmap -o yaml
 
+Resultat:
 DB_HOST: wall-db
 DB_NAME: walldb
 DB_PORT: "5432"
 
-Kommando: oc get deployment wall-web -o yaml | grep config
+Verifiering av Deployment:
+oc get deployment wall-web -o yaml | grep -A20 -B5 configMapKeyRef
 
-Output: 
+Resultat:
+DB_HOST hämtas från wall-configmap, nyckel DB_HOST.
+DB_PORT hämtas från wall-configmap, nyckel DB_PORT.
+DB_NAME hämtas från wall-configmap, nyckel DB_NAME.
 
-Verifieras att DB hämtas från wall-configmap via configMapKeyRef.
+Slutsats:
+Webbapplikationens databasanslutning konfigureras via ConfigMap. Databasens adress, port och namn hanteras separat från känsliga autentiseringsuppgifter.

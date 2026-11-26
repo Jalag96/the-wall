@@ -1,4 +1,9 @@
-Just nu får vem som helst lägga upp ett meddelande sålänge de känner till adressen https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/. 
+Just nu får vem som helst lägga upp ett meddelande så länge de känner till adressen https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/.
 
-Vill vi begränsa åtkomsten så finns det väldigt olika sätt att göra det på. Man kan skapa en inloggningsfunktion som kräver en token eller lösenord direkt från ägaren, man stänga av access för utomstående IP-adresser, skapa en begränsad länk som fungerar en viss tid etc.
+Vill vi begränsa åtkomsten finns det flera olika sätt att göra det på. 
+Man kan skapa en inloggningsfunktion som kräver en token eller ett lösenord, begränsa åtkomst för utomstående IP-adresser eller skapa en begränsad länk som fungerar under en viss tid.
 
+Det innebär att applikationen i nuläget saknar användarautentisering och behörighetskontroll för att skapa meddelanden. 
+HTTPS skyddar kommunikationen, men identifierar inte användaren eller avgör vem som får publicera innehåll.
+
+Slutsats: Applikationen är tillgänglig via HTTPS, men vem som helst som når adressen kan läsa och publicera meddelanden. I en produktionsmiljö bör autentisering och lämplig behörighetskontroll införas.

@@ -1,6 +1,56 @@
-[student@falcon-walrus-26 ~/the-wall$ oc get hpa wall-web --watch
-NAME       REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
-wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
-wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
-wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         3          21h
-wall-web   Deployment/wall-web   cpu: 1%/50%   2         3         2          21h
+# E6 – Verifiering av HPA och automatisk skalning
+
+## Genomförande
+
+Ett kontrollerat lasttest genomfördes med den interna lastgeneratorn mot tjänsten `wall-web`.
+
+Testkonfiguration:
+- Antal samtidiga klienter: 2
+- Testets varaktighet: 60 sekunder
+- HTTP-metod: GET
+- Mål: `http://wall-web`
+- HPA CPU-mål: 50 %
+- Minsta antal repliker: 2
+- Högsta antal repliker: 3
+
+Före testet kördes två webb-Pods. CPU-användningen låg på cirka 2m per Pod och HPA rapporterade 1 % av CPU-målet.
+
+## Resultat
+
+Under belastningstestet ökade CPU-utnyttjandet enligt HPA:s mätvärden:
+
+| CPU-utnyttjande | Antal repliker |
+|---|---:|
+| 1 % – före testet | 2 |
+| 8 % | 2 |
+| 73 % | 2 |
+| 94 % | 3 |
+| 74 % | 3 |
+| 42 % | 3 |
+| 1 % – efter testet | 3 |
+| 1 % – efter nedskalning | 2 |
+
+När CPU-utnyttjandet översteg HPA:s mål på 50 % skalades Deployment automatiskt upp från två till tre repliker. Den tredje Podden startade och blev Ready.
+
+När belastningen upphörde sjönk CPU-utnyttjandet till 1 %. HPA skalade därefter automatiskt ned antalet repliker till två.
+
+## Verifiering
+
+HPA:s händelselogg bekräftade båda skalningshändelserna:
+
+- `SuccessfulRescale`: New size: 3; reason: cpu resource utilization (percentage of request) above target.
+- `SuccessfulRescale`: New size: 2; reason: All metrics below target.
+
+Slutkontrollen med `oc get pods` visade två webb-Pods med status `Running` och `1/1 Ready`.
+
+`oc describe hpa wall-web` visade även att HPA kunde beräkna önskat antal repliker utifrån uppmätt CPU-användning.
+
+## Slutsats
+
+Lasttestet verifierade att HPA fungerar enligt konfigurationen. Två samtidiga klienter som skickade GET-förfrågningar mot webbapplikationen var tillräckligt för att CPU-utnyttjandet skulle överstiga målet och utlösa uppskalning från två till tre repliker.
+
+När belastningen upphörde och CPU-utnyttjandet sjönk skalades antalet repliker automatiskt tillbaka till två.
+
+Testet visar därmed att applikationen kan anpassa antalet webb-Pods efter förändrad CPU-belastning utan manuell skalning.
+
+**Avgränsning:** Testet visar att webbapplikationens CPU-belastning ökade under lasttestet och utlöste HPA. Det fastställer däremot inte att någon specifik komponent utgjorde en flaskhals.

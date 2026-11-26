@@ -13,3 +13,20 @@ Output:
 Kommando: oc exec test-client -- bash -c 'timeout 5 bash -c "</dev/tcp/wall-db/5432"'
 
 Output: command terminated with exit code 124
+
+
+Kontrolltest från tillåten webb-Pod:
+
+Kommando:
+oc exec wall-web-bc8d6c88-hcrqq -- python -c "
+import socket
+s = socket.create_connection(('wall-db', 5432), timeout=5)
+print('Anslutning till wall-db:5432 lyckades')
+s.close()
+"
+
+Resultat:
+Anslutning till wall-db:5432 lyckades
+
+Slutsats:
+NetworkPolicy fungerar enligt förväntan. Testklienten kan nå webbapplikationen men blockeras från databasen. Webbapplikationens Pod tillåts däremot ansluta till databasen på TCP-port 5432.

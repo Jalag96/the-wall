@@ -1,4 +1,22 @@
-Detta har gjorts efter byte av lösenord vilket betyder att databasen fungerar trots det.
+KRAV C5 – VERIFIERING EFTER LÖSENORDSBYTE
+
+Testet genomfördes efter att databasens lösenord hade uppdaterats i både Kubernetes Secret och PostgreSQL.
+
+1. Skicka ett testmeddelande via webbapplikationens HTTPS-route.
+
+Resultat:
+HTTP/1.1 302 FOUND
+
+2. Kontrollera att meddelandet sparats i PostgreSQL.
+
+Kommando:
+oc exec deployment/wall-db -- psql -U walluser -d walldb -c "SELECT id, author, message FROM messages ORDER BY id DESC LIMIT 3;"
+
+Resultat:
+ID 10 – C5-test – Test efter lösenordsbyte
+
+Slutsats:
+Webbapplikationen kunde ansluta till databasen och spara ett nytt meddelande efter lösenordsbytet. Detta verifierar att applikationens nya autentiseringsuppgifter fungerar.
 
 
 [student@falcon-walrus-26 ~/the-wall/tester/bevis$ curl -k -i -d "author=C5-test&message=Test efter lösenordsbyte" https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/post

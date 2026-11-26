@@ -1,0 +1,131 @@
+H – ÅTERSKAPANDE FÖRE TEST
+
+SYFTE
+
+Dokumentera applikationens status och befintliga resurser innan testet av återskapande påbörjades.
+
+1. RESURSER
+
+Följande kommandon användes:
+
+oc project
+oc get deployments
+oc get services
+oc get hpa
+oc get pvc
+oc get configmap wall-configmap
+oc get secret wall-secret
+
+2. APPLIKATIONENS STATUS
+
+Health-endpoint kontrollerades:
+
+curl -i https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/health
+
+Startsidan kontrollerades:
+
+curl -i https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/
+
+Resultat:
+- Webbapplikationen svarade med HTTP 200 OK.
+- Databasen var tillgänglig.
+- Befintliga meddelanden kunde läsas.
+- Applikationen var i fungerande skick inför testet.
+
+3. DATABASVOLYM
+
+PVC kontrollerades med:
+
+oc get pvc wall-db-data
+
+PVC hade status Bound och använde volymen:
+
+pvc-f507b913-90d0-4f82-ab38-66ee5d6c2680
+
+4. BEFINTLIGA MEDDELANDEN
+
+Meddelanden noterades nedan före nedstängningen för att kunna jämföras efter återställningen.
+
+SLUTSTATUS FÖRE TEST
+
+Applikationen fungerade, webb- och databaspoddarna var igång och PVC:n var Bound.
+
+
+
+        Meddelanden:
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:25:59.480367</span>
+            <p>Test tvÅÅÅÅ</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:15:18.692797</span>
+            <p>Test</p>
+        </div>
+
+        <div class="message">
+            <span class="author">C5-test</span>
+            <span class="date">2026-11-23 15:26:00.362899</span>
+            <p>Test efter lösenordsbyte</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-23 14:52:49.466046</span>
+            <p>Fungerar deet?</p>
+        </div>
+
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:12:34.765355</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:11:21.953694</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-18 14:05:12.865283</span>
+            <p>Tack Jonas!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jonas</span>
+            <span class="date">2026-11-18 08:35:52.682387</span>
+            <p>Snyggt jobbat Jacob!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">kubectl</span>
+            <span class="date">2026-11-13 14:01:06.189065</span>
+            <p>hej!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+
+    </div>
+</body>
+</html>[student@falcon-walrus-26 ~/the-wall/drift$

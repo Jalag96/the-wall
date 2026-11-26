@@ -1,0 +1,14 @@
+KRAV A5 – ÅTERSKAPANDE AV MILJÖ
+
+Instruktioner för att återskapa miljön finns i projektets dokumentation:
+
+- README.md – projektöversikt, arkitektur och tekniker.
+- drift/runbook.md – steg-för-steg-instruktioner för installation, konfiguration, beroenden och uppstart med en ny tom PVC.
+
+Manifesten finns i katalogen manifests/.
+
+Återställning har verifierats genom att miljön tagits bort och skapats på nytt. Testet med en ny tom PVC visade att webbapplikationen kunde startas och användas utan tidigare databasmeddelanden.
+
+Resultat: Miljön kan återskapas med en ny persistent volym med hjälp av levererade manifest och instruktioner.
+
+Runbook & Readme visar även hur man återfår gamla meddelanden (som sparats som backup) in i en ny databas.

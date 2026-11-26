@@ -1,0 +1,201 @@
+V10 – ÅTERSKAPANDE
+
+SYFTE
+
+Verifiera att Deployments och Services kan tas bort och återskapas utan att förlora befintliga databasmeddelanden.
+
+1. NEDSTÄNGNING
+
+HPA togs bort tillfälligt:
+
+oc delete hpa wall-web
+
+Webbapplikationen och databasen skalades ned:
+
+oc scale deployment/wall-web --replicas=0
+oc scale deployment/wall-db --replicas=0
+
+Kontroll: Inga poddar kördes.
+
+PVC kontrollerades:
+
+oc get pvc wall-db-data
+
+Resultat: Bound. Volym-ID: pvc-f507b913-90d0-4f82-ab38-66ee5d6c2680.
+
+2. BORTTAGNA OBJEKT
+
+Följande objekt togs bort:
+
+oc delete deployment wall-web wall-db
+oc delete service wall-web wall-db
+
+Borttagna:
+- Deployment wall-web
+- Deployment wall-db
+- Service wall-web
+- Service wall-db
+
+Behållna:
+- Secret wall-secret
+- ConfigMap wall-configmap
+- PVC wall-db-data
+- NetworkPolicy
+- Route wall
+
+3. ÅTERSKAPANDE
+
+Databasen återskapades:
+
+oc apply -f wall-db-service.yaml
+oc apply -f wall-db-deployment.yaml
+
+Webbapplikationen återskapades:
+
+oc apply -f wall-web-service.yaml
+oc apply -f wall-web-deployment.yaml
+
+Resultat:
+- wall-db: 1/1 Ready
+- wall-web: 2/2 Ready
+- Samtliga Services hade fungerande endpoints.
+- PVC var fortfarande Bound med samma volym-ID.
+
+4. FUNKTIONSTEST
+
+Startsidan testades:
+
+curl -i https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/
+
+Resultat: HTTP 200 OK.
+
+Databasen innehöll fortfarande 12 tidigare meddelanden.
+
+Health-endpoint testades:
+
+curl -i https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se/health
+
+Resultat: HTTP 200 OK.
+
+Ett nytt meddelande skickades via webbgränssnittet och sparades korrekt. Bevis finns under Slutsats.
+
+5. HPA OCH SLUTKONTROLL
+
+HPA återskapades:
+
+oc apply -f wall-web-hpa.yaml
+
+Resultat:
+- CPU: 1% / 50%
+- Min repliker: 2
+- Max repliker: 3
+- Aktuella repliker: 2
+
+Slutkontroll utfördes med:
+
+oc get pods
+oc get deployments
+oc get services
+oc get hpa
+oc get pvc
+oc get routes
+
+Samtliga ordinarie resurser var igång. PVC var Bound och Route fungerade med HTTP 200 OK på /health.
+
+ROUTE
+
+https://wall-student-jacob-lagstrom-lerniastudent-se.apps.okd.cloud2.se
+
+SLUTSATS
+
+Deployments och Services kunde återskapas från manifestfilerna. Befintliga meddelanden bevarades och nya meddelanden kunde sparas efter återställningen.
+
+
+
+
+## Nytt meddelande EFTER kontrollen (+ de äldre):
+
+<div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-26 10:51:35.905448</span>
+            <p>H uppgift test</p>
+        </div>
+
+
+
+## Gamla meddelanden som fanns innan kontrollen:
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:25:59.480367</span>
+            <p>Test tvÅÅÅÅ</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-24 14:15:18.692797</span>
+            <p>Test</p>
+        </div>
+
+        <div class="message">
+            <span class="author">C5-test</span>
+            <span class="date">2026-11-23 15:26:00.362899</span>
+            <p>Test efter lösenordsbyte</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-23 14:52:49.466046</span>
+            <p>Fungerar deet?</p>
+        </div>
+
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:12:34.765355</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+
+        <div class="message">
+            <span class="author">OKD-test</span>
+            <span class="date">2026-11-23 09:11:21.953694</span>
+            <p>Testar skrivning via HTTPS</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-18 14:05:12.865283</span>
+            <p>Tack Jonas!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jonas</span>
+            <span class="date">2026-11-18 08:35:52.682387</span>
+            <p>Snyggt jobbat Jacob!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">kubectl</span>
+            <span class="date">2026-11-13 14:01:06.189065</span>
+            <p>hej!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-13 10:25:23.188786</span>
+            <p>Det fungerar</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 13:37:06.841739</span>
+            <p>HEj!</p>
+        </div>
+
+        <div class="message">
+            <span class="author">Jacob</span>
+            <span class="date">2026-11-12 11:32:12.118515</span>
+            <p>Nothing literally</p>
+        </div>
+
+    </div>
+</body>
