@@ -2,20 +2,19 @@
 
 2026-11-24
 
-Vi skalade ned wall-db till 0 repliker för att kontrollera hur webbapplikationens ReadinessProbe reagerade.
-
+Skalade ned wall-db till 0 repliker för att kontrollera hur webbapplikationens ReadinessProbe reagerade.
 
 oc scale deployment wall-db --replicas=0
 
 Båda webb-Podarna blev 0/1 Running. Det visar att containrarna fortfarande kördes, men inte längre var redo att ta emot trafik eftersom databasen var nere.
 
-Därefter startade vi databasen igen:
+Därefter startades databasen igen:
 
 oc scale deployment wall-db --replicas=1
 
 Båda webb-Podarna blev automatiskt 1/1 Running igen utan omstart.
 
-Resultat: ReadinessProbe fungerar som förväntat. Webbapplikationen slutar ta emot trafik när databasen är otillgänglig och återhämtar sig automatiskt när databasen startar igen.
+Resultat:ReadinessProbe fungerar som förväntat. När databasen blir otillgänglig blir webb-Pods NotReady och markeras därmed som ej redo att ta emot trafik. När databasen återställs blir webb-Pods automatiskt Ready igen utan omstart.
 
 
 [student@falcon-walrus-26 ~/the-wall/tester/bevis$ oc scale deployment wall-db --replicas 0

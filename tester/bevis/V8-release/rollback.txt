@@ -14,3 +14,7 @@ deployment "wall-web" successfully rolled out
 Kontroll visade att v2 åter var aktiv med två tillgängliga webb-Pods (2/2). Båda Podarna visade 1/1 Running.
 
 Resultat: Rollback fungerade och applikationen återställdes till den fungerande versionen.
+docker.io/jalag004/the-wall:v2
+NAME                      READY   STATUS    RESTARTS   AGE
+wall-web-bc8d6c88-hcrqq   1/1     Running   0          24h
+wall-web-bc8d6c88-m4fmm   1/1     Running   0          24h

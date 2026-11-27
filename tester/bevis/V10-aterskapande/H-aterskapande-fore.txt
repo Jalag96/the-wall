@@ -2,7 +2,7 @@ H – ÅTERSKAPANDE FÖRE TEST
 
 SYFTE
 
-Dokumentera applikationens status och befintliga resurser innan testet av återskapande påbörjades.
+Se applikationens status och befintliga resurser innan testet av återskapande påbörjades.
 
 1. RESURSER
 
