@@ -1,124 +1,173 @@
-RUNBOOK – THE WALL (OKD)
+# RUNBOOK – THE WALL (OKD)
 
-1. SYFTE OCH ARKITEKTUR
+## 1. Syfte och arkitektur
 
-Den här runbooken beskriver hur The Wall byggs, driftsätts, verifieras, felsöks och återställs i OKD.
+Den här runbooken beskriver hur The Wall driftsätts, verifieras, underhålls och felsöks i OKD-klustret.
 
-Applikationen består av:
+The Wall är en webbapplikation byggd med Flask och PostgreSQL. Applikationen körs som containrar i OKD och nås via en HTTPS-skyddad Route.
 
-- wall-web: Flask-applikation som körs med Gunicorn.
-- wall-db: PostgreSQL-databas.
-- wall-web-service: Exponerar webbapplikationen internt på port 80.
-- wall-db-service: Exponerar databasen internt på port 5432.
-- wall-route: Gör webbapplikationen tillgänglig via HTTPS.
-- wall-db-data: Persistent Volume Claim (PVC) som lagrar databasens data.
+### 1.1 Arkitektur
 
-Konfiguration hämtas från wall-configmap och känsliga uppgifter från wall-secret.
+Applikationen består av följande resurser:
 
-1.1 FÖRUTSÄTTNINGAR OCH BEHÖRIGHETER
+- wall-web: Flask-applikationen som körs med Gunicorn.
+- wall-db: PostgreSQL-databasen som lagrar meddelanden.
+- wall-web Service: Intern tjänst som distribuerar trafik till webbapplikationens Pods.
+- wall-db Service: Intern tjänst som gör databasen tillgänglig för webbapplikationen.
+- Route: Exponerar webbapplikationen via HTTPS.
+- PersistentVolumeClaim (PVC): Lagrar databasens data så att den finns kvar när databas-Poden ersätts.
+- ConfigMap: Innehåller icke-känslig konfiguration, exempelvis databasens värdnamn och databasnamn.
+- Secret: Innehåller databasens användarnamn och lösenord.
+- NetworkPolicy: Begränsar åtkomsten till databasen så att endast webbapplikationens Pods får ansluta till PostgreSQL.
+- HorizontalPodAutoscaler (HPA): Anpassar antalet webb-Pods efter CPU-belastningen.
 
-För att följa denna runbook krävs:
+Webbapplikationen kör normalt två repliker och kan skalas upp till tre med hjälp av HPA. Databasen körs med en replik och använder en persistent volym.
 
-- Tillgång till ett OKD/OpenShift-kluster.
-- Ett tilldelat OKD-projekt (namespace).
+### 1.2 Förutsättningar och behörigheter
+
+Följande verktyg och behörigheter behövs:
+
+- Tillgång till OKD/OpenShift-klustret.
+- `oc` CLI installerat och inloggat.
 - Behörighet att skapa och hantera Deployments, Services, Routes, ConfigMaps, Secrets, PVC och NetworkPolicies.
-- Tillgång till persistent storage via en fungerande StorageClass.
-- Podman installerat för att bygga och publicera containerimagen.
-- Git installerat för att klona projektet.
-- Tillgång till ett containerregister där den byggda imagen kan publiceras.
-- Tillgång till klustrets API via kommandoradsverktyget oc.
+- Tillgång till aktuell StorageClass.
+- Podman för att bygga och publicera containerimages.
+- Git för att hämta och hantera projektets källkod.
+- Ett konto och ett repository i ett containerregister, exempelvis Docker Hub.
 
-Om ett kommando nekas på grund av otillräckliga behörigheter ska användaren kontrollera sina tilldelade roller och vid behov kontakta klusteradministratören.
-
-Kontrollera aktuell användare och projekt:
+Kontrollera att du är inloggad:
 
 oc whoami
+
+Kontrollera vilket projekt som är aktivt:
+
 oc project
 
-Kontrollera vilka behörigheter användaren har:
+Byt till projektet om det behövs:
+
+oc project student-jacob-lagstrom-lerniastudent-se
+
+Kontrollera behörigheter vid behov:
 
 oc auth can-i create deployments
 oc auth can-i create services
 oc auth can-i create routes
-oc auth can-i create persistentvolumeclaims
 oc auth can-i create secrets
+oc auth can-i create persistentvolumeclaims
 oc auth can-i create networkpolicies
 
-Ett nekande svar innebär att användaren saknar den aktuella behörigheten i det valda projektet. Det betyder inte nödvändigtvis att manifestet är felaktigt.
+## 2. Bygga och publicera containerimage
 
-2. BYGGA OCH PUBLICERA EN NY IMAGE
+Containerimagen byggs med Podman från projektets Containerfile i katalogen app/
 
-För att bygga projektet själv behöver användaren först klona GitHub-repot:
+Gå till projektets rotkatalog:
 
-git clone https://github.com/Jalag96/the-wall.git
+cd ~/the-wall
 
-Gå till projektkatalogen:
+Bygg imagen:
 
-cd the-wall
-
-Bygg imagen från app-katalogen:
-
-podman build -t the-wall:v2 -f app/Containerfile app/
+podman build -t docker.io/jalag004/the-wall:v2 -f app/Containerfile app/
 
 Kontrollera att imagen har skapats:
 
 podman images
 
-För att OKD ska kunna hämta imagen behöver den publiceras i ett containerregister som klustret har åtkomst till. Följande exempel använder Docker Hub.
-
-Ange användarens eget Docker Hub-användarnamn:
-
-export DOCKERHUB_USERNAME=ditt_dockerhub_användarnamn
-
-Logga in:
+Logga in på Docker Hub:
 
 podman login docker.io
 
-Tagga imagen med adressen till det egna registret:
-
-podman tag the-wall:v2 docker.io/$DOCKERHUB_USERNAME/the-wall:v2
-
 Publicera imagen:
 
-podman push docker.io/$DOCKERHUB_USERNAME/the-wall:v2
+podman push docker.io/jalag004/the-wall:v2
 
-Uppdatera därefter image-adressen i manifests/wall-web-deployment.yaml så att den pekar på den publicerade imagen:
+Kontrollera att rätt image används i:
 
-docker.io/DITT_DOCKERHUB_ANVÄNDARNAMN/the-wall:v2
+manifests/wall-web-deployment.yaml
 
-Användarens eget Docker Hub-användarnamn ska ersätta platshållaren.
+Image-inställningen ska vara:
 
-Om registret är privat måste OKD även ges behörighet att hämta imagen. Vid ett publikt repository behövs normalt ingen separat autentisering.
+image: docker.io/jalag004/the-wall:v2
 
-Vid en ny version bör ett nytt versionsnummer användas, exempelvis v3, i stället för att skriva över en befintlig version.
+Vid en ny version bör ett nytt versionsnummer användas, exempelvis `v3`, i stället för att skriva över en befintlig version. Uppdatera därefter Deployment-manifestet så att det pekar på den nya imagen.
 
-3. INSTALLATION OCH DRIFTSÄTTNING
+Om ett annat containerregister används behöver image-adressen anpassas. Vid användning av ett privat register kan OKD även behöva autentiseringsuppgifter för att kunna hämta imagen.
 
-Kontrollera först att rätt OKD-projekt används:
+## 3. Installation och driftsättning
 
-oc project
+### 3.1 Förberedelser
 
-Kontrollera att nödvändiga resurser finns:
+Kontrollera att rätt OKD-projekt är aktivt:
 
-oc get configmap wall-configmap
+oc project student-jacob-lagstrom-lerniastudent-se
+
+Kontrollera att Secret finns:
+
 oc get secret wall-secret
-oc get pvc wall-db-data
 
-Secret och PVC ska finnas sedan tidigare. De ska inte tas bort vid en vanlig ominstallation.
+Secret måste finnas innan Deployment-resurserna skapas eftersom både webbapplikationen och databasen använder uppgifter från den.
 
-Applicera databasens och webbapplikationens resurser:
+Om Secret saknas behöver det skapas innan driftsättningen. Exempel:
+
+oc create secret generic wall-secret \
+--from-literal=DB_USER='walluser' \
+--from-literal=DB_PASSWORD='DITT_LÖSENORD' \
+--dry-run=client -o yaml | oc apply -f -
+
+Ersätt lösenordet med det aktuella lösenordet. Lägg aldrig in riktiga lösenord i Git eller i projektets manifestfiler.
+
+### 3.2 Installation med deploy.sh
+
+Projektet innehåller ett driftsättningsskript som automatiserar installationen.
+
+Från projektets rotkatalog körs:
+
+./scripts/deploy.sh
+
+Skriptet kontrollerar först att `wall-secret` finns och applicerar därefter projektets resurser i rätt ordning.
+
+Det omfattar bland annat ConfigMap, PVC, Services, NetworkPolicy, Deployments, HPA och Route.
+
+Skriptet skapar inte databassecreten. Den måste alltså finnas sedan tidigare.
+
+### 3.3 Manuell driftsättning
+
+Vid felsökning eller om resurser behöver appliceras separat kan manifestfilerna användas direkt med `oc apply`.
+
+Börja med att kontrollera att Secret finns:
+
+oc get secret wall-secret
+
+Om Secret saknas kan det skapas med:
+
+oc create secret generic wall-secret \
+--from-literal=DB_USER='walluser' \
+--from-literal=DB_PASSWORD='DITT_LÖSENORD' \
+--dry-run=client -o yaml | oc apply -f -
+
+Applicera därefter ConfigMap och PVC:
+
+oc apply -f manifests/wall-configmap.yaml
+oc apply -f manifests/wall-pvc.yaml
+
+Skapa databasens resurser:
 
 oc apply -f manifests/wall-db-service.yaml
-oc apply -f manifests/wall-web-service.yaml
-oc apply -f manifests/wall-db-deployment.yaml
-oc apply -f manifests/wall-web-deployment.yaml
 oc apply -f manifests/wall-db-networkpolicy.yaml
-oc apply -f manifests/wall-route.yaml
+oc apply -f manifests/wall-db-deployment.yaml
+
+Skapa webbapplikationens resurser:
+
+oc apply -f manifests/wall-web-service.yaml
+oc apply -f manifests/wall-web-deployment.yaml
+
+Avsluta med HPA och Route:
+
 oc apply -f manifests/wall-web-hpa.yaml
+oc apply -f manifests/wall-route.yaml
 
-Vid en helt ny installation behöver även PVC, ConfigMap och Secret skapas innan Deployment-resurserna startas. Secret ska skapas med användarens egna databasuppgifter och aldrig sparas med riktiga lösenord i Git.
+Kontrollera att resurserna har skapats och att Pods startar innan installationen betraktas som färdig.
 
-4. VERIFIERING EFTER DRIFTSÄTTNING
+## 4. VERIFIERING EFTER DRIFTSÄTTNING
 
 Kontrollera att poddarna är igång:
 
@@ -139,21 +188,31 @@ oc get pvc wall-db-data
 
 PVC ska ha status Bound.
 
+Kontrollera HPA:
+
+oc get hpa wall-web
+
+Kontrollera att HPA:n är kopplad till Deployment wall-web och att den har minst två repliker.
+
 Kontrollera Route:
 
 oc get route wall
 
-Testa applikationen via HTTPS:
+Testa applikationens hälsokontroll via HTTPS:
 
 curl -i https://<ROUTE-ADRESS>/health
+
+Förväntat resultat är HTTP 200 OK och ett JSON-svar med status ok.
 
 Kontrollera även startsidan:
 
 curl -i https://<ROUTE-ADRESS>/
 
-Förväntat resultat är HTTP 200 när applikationen och databasen fungerar.
+Förväntat resultat är HTTP 200 OK och att webbapplikationens HTML-innehåll returneras.
 
-5. LÖSENORDSROTATION
+Slutligen bör ett testmeddelande skapas via webbapplikationen och sedan kontrolleras att det går att läsa tillbaka. Detta verifierar att webbapplikationen kan kommunicera med databasen och att läsning och skrivning fungerar.
+
+## 5. LÖSENORDSROTATION
 
 Databasens lösenord finns i Kubernetes Secret wall-secret.
 
@@ -169,11 +228,21 @@ Arbetsgång:
 
 oc rollout restart deployment/wall-web
 
-6. Kontrollera att webbapplikationen startar och kan läsa och skriva meddelanden.
+### 5.1 Verifiera lösenordsrotationen
+
+Kontrollera att webbapplikationens Pods har startat om:
+
+oc get pods -l app=wall-web
+
+Kontrollera att Deployment är färdig:
+
+oc rollout status deployment/wall-web
+
+Testa därefter att läsa in startsidan och skapa ett nytt meddelande. Det bekräftar att applikationen kan kommunicera med databasen med de uppdaterade inloggningsuppgifterna.
 
 Lösenord ska hanteras säkert och aldrig läggas i Git eller i rapportens kommandoutskrifter.
 
-6. FELSÖKNING
+## 6. FELSÖKNING
 
 Kontrollera poddar:
 
@@ -213,7 +282,7 @@ oc rollout history deployment/wall-web
 
 Vanliga problem är felaktiga miljövariabler, saknade Secrets, felaktiga Service-selectors, databasanslutningsproblem och misslyckade probes.
 
-7. ROLLBACK AV WEBBAPPLIKATIONEN
+## 7. ROLLBACK AV WEBBAPPLIKATIONEN
 
 Om en ny version av webbapplikationen inte fungerar kan Deployment återställas till föregående revision:
 
@@ -229,12 +298,14 @@ Testa därefter /health och startsidan.
 
 En rollback av webbapplikationen återställer inte automatiskt databasens schema eller innehåll. Databasändringar behöver hanteras separat.
 
-8. OMSTART MED BIBEHÅLLEN DATABASVOLYM
+## 8. OMSTART MED BIBEHÅLLEN DATABASVOLYM
 
 För att starta om databasen utan att förlora sparade meddelanden ska den befintliga PVC:n wall-db-data behållas.
 
 Kontrollera först att webbapplikationen inte tar emot nya skrivningar. Skala ned webbapplikationen:
 
+oc delete hpa wall-web 
+(HPA skalar upp Deployment till 2 replicas, därför måste den tillfälligt tas bort)
 oc scale deployment/wall-web --replicas=0
 
 Kontrollera att webbapplikationens poddar har avslutats:
@@ -254,6 +325,7 @@ Starta därefter webbapplikationen:
 
 oc scale deployment/wall-web --replicas=2
 oc rollout status deployment/wall-web
+oc apply -f manifests/wall-web-hpa.yaml
 
 Kontrollera att PVC fortfarande är Bound:
 
@@ -261,7 +333,7 @@ oc get pvc wall-db-data
 
 Viktigt: PVC:n får inte raderas. Det är den som bevarar databasens data när databaspodden ersätts.
 
-9. SEPARAT TEST MED EN NY TOM PVC
+## 9. SEPARAT TEST MED EN NY TOM PVC
 
 Ett separat test kan genomföras för att verifiera att databasen kan initieras med en helt ny, tom volym.
 
@@ -281,7 +353,7 @@ Den nya PVC:n ska vara tom från början. Därför förväntas inga gamla meddel
 
 Det här testet ska hållas separat från produktion så att befintliga meddelanden inte riskerar att försvinna.
 
-10. ÅTERSTÄLLNING EFTER TEST OCH SLUTKONTROLL
+## 10. ÅTERSTÄLLNING EFTER TEST OCH SLUTKONTROLL
 
 När tester och felsökning är färdiga ska miljön lämnas i fungerande skick.
 
